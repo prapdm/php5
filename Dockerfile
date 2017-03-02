@@ -2,6 +2,7 @@ FROM php:5-fpm-alpine
 RUN apk add --no-cache libpng-dev libmcrypt-dev libxml2-dev freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev icu-dev
 RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install calendar && \
+    docker-php-ext-configure intl && \
     docker-php-ext-install intl && \
     docker-php-ext-install opcache && \
     docker-php-ext-configure gd \
@@ -15,5 +16,5 @@ RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install soap && \
     docker-php-ext-install zip && \
     docker-php-ext-install mysqli
-RUN apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev
+RUN apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev icu-dev
 
