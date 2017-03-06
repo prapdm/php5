@@ -1,5 +1,6 @@
 FROM php:5-fpm-alpine
-RUN apk add --no-cache libpng-dev libmcrypt-dev libxml2-dev freetype libpng libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev icu-dev
+RUN apk add --no-cache freetype libpng libjpeg-turbo && \
+apk add --no-cache --virtual .build-dependencies libpng-dev libmcrypt-dev libxml2-dev freetype-dev libpng-dev libjpeg-turbo-dev icu-dev curl-dev gettext-dev
 
 
 # Possible values for ext-name:
@@ -7,6 +8,7 @@ RUN apk add --no-cache libpng-dev libmcrypt-dev libxml2-dev freetype libpng libj
 # json ldap mbstring mcrypt mssql mysql mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci
 # pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline recode reflection session shmop simplexml snmp soap
 # sockets spl standard sybase_ct sysvmsg sysvsem sysvshm tidy tokenizer wddx xml xmlreader xmlrpc xmlwriter xsl zip
+
 
 RUN docker-php-ext-configure intl --enable-intl  && \
     docker-php-ext-configure mbstring --enable-mbstring && \
@@ -16,8 +18,18 @@ RUN docker-php-ext-configure intl --enable-intl  && \
         --with-png-dir=/usr/include/ \
         --with-jpeg-dir=/usr/include/ && \
         NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
-    docker-php-ext-install -j${NPROC} gd && \
     docker-php-ext-install  \
+       gettext \
+       hash \
+       xml \
+       xmlreader \ 
+       fileinfo \
+       ftp \
+       simplexml \
+       ctype \
+       iconv \
+       json \
+       curl \
        intl \
        mbstring \
        pdo_mysql \
@@ -26,8 +38,9 @@ RUN docker-php-ext-configure intl --enable-intl  && \
        mcrypt \
        soap \
        zip \
-       mysqli
+       mysqli && \
+    docker-php-ext-install -j${NPROC} gd 
        
-RUN apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev
+RUN apk del .build-dependencies
 
 
